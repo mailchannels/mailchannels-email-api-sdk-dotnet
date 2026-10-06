@@ -12,6 +12,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 static class TlsProbe
 {
+    private static X509Certificate2 ServerCertificate(X509Certificate2 certificate)
+    {
+        // Schannel cannot reliably serve an ephemeral CopyWithPrivateKey key.
+        // Reimport this synthetic test certificate with the default key storage;
+        // Dispose cleans it up. Never install a root in the machine trust store.
+        if (!OperatingSystem.IsWindows()) return new X509Certificate2(certificate);
+        var pfx = certificate.Export(X509ContentType.Pfx);
+#if NET9_0_OR_GREATER
+        return X509CertificateLoader.LoadPkcs12(pfx, null, X509KeyStorageFlags.DefaultKeySet);
+#else
+        return new X509Certificate2(pfx, (string?)null, X509KeyStorageFlags.DefaultKeySet);
+#endif
+    }
+
     public static async Task<int> RunAsync()
     {
         using var rootKey = RSA.Create(2048);
@@ -30,7 +44,8 @@ static class TlsProbe
             request.CertificateExtensions.Add(new X509BasicConstraintsExtension(false, false, 0, true));
             request.CertificateExtensions.Add(new X509EnhancedKeyUsageExtension(new OidCollection {new Oid("1.3.6.1.5.5.7.3.1")}, true));
             using var publicCert = request.Create(root, DateTimeOffset.UtcNow.AddDays(-1), scenario == "expired" ? DateTimeOffset.UtcNow.AddHours(-1) : DateTimeOffset.UtcNow.AddHours(1), RandomNumberGenerator.GetBytes(16));
-            using var cert = publicCert.CopyWithPrivateKey(key);
+            using var ephemeralCert = publicCert.CopyWithPrivateKey(key);
+            using var cert = ServerCertificate(ephemeralCert);
             using var stop = new CancellationTokenSource(TimeSpan.FromSeconds(5));
             var listener = new TcpListener(IPAddress.Loopback, 0); listener.Start();
             var port = ((IPEndPoint)listener.LocalEndpoint).Port;
@@ -41,7 +56,7 @@ static class TlsProbe
                         using var tcp = await listener.AcceptTcpClientAsync(stop.Token);
                         using var tls = new SslStream(tcp.GetStream());
                         try { await tls.AuthenticateAsServerAsync(new SslServerAuthenticationOptions { ServerCertificate = cert }, stop.Token); }
-                        catch (AuthenticationException) { continue; }
+                        catch (AuthenticationException) when (reject) { continue; }
                         using var reader = new StreamReader(tls, Encoding.ASCII, false, 1024, true);
                         var first = await reader.ReadLineAsync(stop.Token);
                         if (first is null) continue;
