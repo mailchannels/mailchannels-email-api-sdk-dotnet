@@ -3,6 +3,45 @@ on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 jobs:
+  desktop:
+    name: Native ${{ matrix.os }} / ${{ matrix.framework }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2025, macos-15]
+        framework: [net8.0, net9.0, net10.0]
+        include:
+          - framework: net8.0
+            sdk: 8.0.x
+          - framework: net9.0
+            sdk: 9.0.x
+          - framework: net10.0
+            sdk: 10.0.x
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        id: dotnet
+        with:
+          dotnet-version: ${{ matrix.sdk }}
+      - name: Select installed SDK and record native platform
+        env:
+          SELECTED_SDK: ${{ steps.dotnet.outputs.dotnet-version }}
+        run: |
+          python -c 'import json,os; open("global.json", "w").write(json.dumps({"sdk":{"version":os.environ["SELECTED_SDK"],"rollForward":"disable"}}))'
+          dotnet --info
+      - name: Restore locked dependencies and run native fixtures
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+        run: |
+          dotnet restore tests/Probe.csproj --locked-mode -p:ProbeFramework=${{ matrix.framework }}
+          dotnet run --project tests/Probe.csproj --no-restore --configuration Release -p:ProbeFramework=${{ matrix.framework }}
   test:
     runs-on: ubuntu-latest
     strategy:
