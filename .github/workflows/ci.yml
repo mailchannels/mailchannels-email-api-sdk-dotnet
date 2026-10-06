@@ -32,6 +32,7 @@ jobs:
       - run: python -m pip install PyYAML==6.0.3
       - run: bash scripts/regenerate.sh && git diff --exit-code
       - run: bash scripts/pack.sh
-      - run: bash scripts/audit.sh > artifacts/audit.json
-      - run: python scripts/check-audit.py artifacts/audit.json
+      - run: |
+          bash scripts/audit.sh > "$RUNNER_TEMP/audit.json"
+          python scripts/check-audit.py "$RUNNER_TEMP/audit.json"
       - run: bash scripts/build-example.sh
