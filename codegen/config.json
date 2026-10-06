@@ -1,0 +1,15 @@
+{
+  "library": "generichost",
+  "packageName": "MailChannels.EmailApi",
+  "packageVersion": "0.1.0-alpha.1",
+  "targetFramework": "net8.0",
+  "hideGenerationTimestamp": true,
+  "packageAuthors": "MailChannels",
+  "packageCompany": "MailChannels",
+  "packageTitle": "MailChannels Email API SDK",
+  "packageDescription": "Server-side .NET client for all MailChannels Email API operations. Support: dev@mailchannels.com. Unreleased candidate.",
+  "packageCopyright": "Copyright (c) 2026 MailChannels",
+  "licenseId": "MIT",
+  "packageTags": "mailchannels email transactional email-api",
+  "releaseNote": "Unreleased evaluation candidate; not published to NuGet.org."
+}

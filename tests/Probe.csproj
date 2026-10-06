@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><ProbeFramework Condition="'$(ProbeFramework)' == ''">net8.0</ProbeFramework><TargetFramework>$(ProbeFramework)</TargetFramework><NuGetLockFilePath>packages.$(ProbeFramework).lock.json</NuGetLockFilePath><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup><ProjectReference Include="../src/MailChannels.EmailApi/MailChannels.EmailApi.csproj" /></ItemGroup>
+</Project>
