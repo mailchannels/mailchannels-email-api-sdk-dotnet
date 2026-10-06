@@ -11,5 +11,6 @@
   "packageCopyright": "Copyright (c) 2026 MailChannels",
   "licenseId": "MIT",
   "packageTags": "mailchannels email transactional email-api",
-  "releaseNote": "Unreleased evaluation candidate; not published to NuGet.org."
+  "releaseNote": "Unreleased evaluation candidate; not published to NuGet.org.",
+  "packageGuid": "{B01301EA-5370-435F-82D4-C14B12844170}"
 }
