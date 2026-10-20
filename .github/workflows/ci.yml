@@ -34,7 +34,7 @@ jobs:
         env:
           SELECTED_SDK: ${{ steps.dotnet.outputs.dotnet-version }}
         run: |
-          python -c 'import json,os; open("global.json", "w").write(json.dumps({"sdk":{"version":os.environ["SELECTED_SDK"],"rollForward":"disable"}}))'
+          dotnet new globaljson --sdk-version "$SELECTED_SDK" --roll-forward disable
           dotnet --info
       - name: Restore locked dependencies and run native fixtures
         env:
