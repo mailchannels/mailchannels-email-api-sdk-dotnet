@@ -8,7 +8,7 @@ subaccounts, webhooks, suppressions, metrics, domain/DKIM and tracking managemen
 Never place API keys in browser or mobile applications.
 
 The library targets net8.0 and has 65 passing native fixture checks on Linux x64,
-Windows Server 2025 x64 and macOS 15.7 arm64 with .NET 8, 9 and 10 consumers.
+Windows Server 2025 x64 and macOS 15 arm64 with .NET 8, 9 and 10 consumers.
 Prefer .NET 10 for new applications: Microsoft's support for .NET 8/9 ends
 November 10, 2026. Other operating-system/architecture combinations are unvalidated.
 Fixtures are baseline contract checks, not exhaustive live-provider conformance.
