@@ -4,21 +4,14 @@ permissions:
   contents: read
 jobs:
   desktop:
-    name: Native ${{ matrix.os }} / ${{ matrix.framework }}
+    name: Native ${{ matrix.os }} / net${{ matrix.version }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         os: [windows-2025, macos-15]
-        framework: [net8.0, net9.0, net10.0]
-        include:
-          - framework: net8.0
-            sdk: 8.0.x
-          - framework: net9.0
-            sdk: 9.0.x
-          - framework: net10.0
-            sdk: 10.0.x
+        version: ['8.0', '9.0', '10.0']
     defaults:
       run:
         shell: bash
@@ -29,7 +22,7 @@ jobs:
       - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
         id: dotnet
         with:
-          dotnet-version: ${{ matrix.sdk }}
+          dotnet-version: ${{ matrix.version }}.x
       - name: Select installed SDK and record native platform
         env:
           SELECTED_SDK: ${{ steps.dotnet.outputs.dotnet-version }}
@@ -40,8 +33,8 @@ jobs:
         env:
           DOTNET_CLI_TELEMETRY_OPTOUT: '1'
         run: |
-          dotnet restore tests/Probe.csproj --locked-mode -p:ProbeFramework=${{ matrix.framework }}
-          dotnet run --project tests/Probe.csproj --no-restore --configuration Release -p:ProbeFramework=${{ matrix.framework }}
+          dotnet restore tests/Probe.csproj --locked-mode -p:ProbeFramework=net${{ matrix.version }}
+          dotnet run --project tests/Probe.csproj --no-restore --configuration Release -p:ProbeFramework=net${{ matrix.version }}
   test:
     runs-on: ubuntu-latest
     strategy:
