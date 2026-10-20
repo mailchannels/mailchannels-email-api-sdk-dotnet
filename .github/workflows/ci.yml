@@ -3,6 +3,38 @@ on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 jobs:
+  desktop:
+    name: Native ${{ matrix.os }} / net${{ matrix.version }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2025, macos-15]
+        version: ['8.0', '9.0', '10.0']
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68
+        id: dotnet
+        with:
+          dotnet-version: ${{ matrix.version }}.x
+      - name: Select installed SDK and record native platform
+        env:
+          SELECTED_SDK: ${{ steps.dotnet.outputs.dotnet-version }}
+        run: |
+          dotnet new globaljson --sdk-version "$SELECTED_SDK" --roll-forward disable
+          dotnet --info
+      - name: Restore locked dependencies and run native fixtures
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+        run: |
+          dotnet restore tests/Probe.csproj --locked-mode -p:ProbeFramework=net${{ matrix.version }}
+          dotnet run --project tests/Probe.csproj --no-restore --configuration Release -p:ProbeFramework=net${{ matrix.version }}
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -16,7 +48,7 @@ jobs:
           - framework: net10.0
             image: mcr.microsoft.com/dotnet/sdk@sha256:e70cdb7f80b0348f5cb85f19a8f670fca061f033d57eed12fa003d58b0e06317
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - run: bash scripts/test.sh
@@ -26,7 +58,7 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           persist-credentials: false
       - run: python -m pip install PyYAML==6.0.3
