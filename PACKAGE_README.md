@@ -1,7 +1,7 @@
 # MailChannels Email API for .NET
 
 Unreleased candidate. This package has not been published to NuGet.org.
-Support: dev@mailchannels.com. License: MIT.
+License: MIT.
 
 A server-side client covering all 42 operations in Email API 1.7.1: sending,
 subaccounts, webhooks, suppressions, metrics, domain/DKIM and tracking management.
@@ -38,6 +38,12 @@ classes manually bypasses these registered defaults.
 Model ToString output is redacted and default SDK error logs omit raw exception
 objects. Explicit fields, serialization, raw responses, thrown exceptions and
 event callbacks retain data. Avoid logging those values or credentials.
+
+## Support
+
+This project is supported by the MailChannels team on a best-effort basis. The best way to get support is to file an issue on GitHub: https://github.com/mailchannels/mailchannels-email-api-sdk-dotnet/issues
+
+If you are a MailChannels customer and have a problem with the operation of the MailChannels service, you can get support at https://support.mailchannels.com/
 
 ## Release status
 
