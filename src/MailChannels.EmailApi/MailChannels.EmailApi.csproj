@@ -9,7 +9,7 @@
     <Authors>MailChannels</Authors>
     <Company>MailChannels</Company>
     <AssemblyTitle>MailChannels Email API SDK</AssemblyTitle>
-    <Description>Server-side .NET client for all MailChannels Email API operations. Support: dev@mailchannels.com. Unreleased candidate.</Description>
+    <Description>Server-side .NET client for all MailChannels Email API operations. Best-effort support through GitHub issues. Unreleased candidate.</Description>
     <Copyright>Copyright (c) 2026 MailChannels</Copyright>
     <RootNamespace>MailChannels.EmailApi</RootNamespace>
     <Version>0.1.0-alpha.1</Version>
