@@ -1,15 +1,21 @@
 # MailChannels Email API for .NET
 
+A .NET library for MailChannels Email API. Send transactional email, such as
+sign-up confirmations, password resets, receipts and notifications, from your
+.NET app, set up delivery webhooks, and manage sub-accounts when your users send
+through your app.
+
 Unreleased candidate. This package has not been published to NuGet.org.
 License: MIT.
 
 A server-side client covering all 42 operations in Email API 1.7.1: sending,
-subaccounts, webhooks, suppressions, metrics, domain/DKIM and tracking management.
+sub-accounts, webhooks, suppressions, metrics, domain/DKIM and tracking management.
 Never place API keys in browser or mobile applications.
 
-The library targets net8.0 and has 65 passing native fixture checks on Linux
-with .NET 8, 9 and 10 consumers. Prefer .NET 10 for new applications: Microsoft's
-support for .NET 8/9 ends November 10, 2026. Windows/macOS remain unvalidated.
+The library targets net8.0 and has 65 passing native fixture checks on Linux x64,
+Windows Server 2025 x64 and macOS 15 arm64 with .NET 8, 9 and 10 consumers.
+Prefer .NET 10 for new applications: Microsoft's support for .NET 8/9 ends
+November 10, 2026. Other operating-system/architecture combinations are unvalidated.
 Fixtures are baseline contract checks, not exhaustive live-provider conformance.
 
 ## Use

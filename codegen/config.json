@@ -7,7 +7,7 @@
   "packageAuthors": "MailChannels",
   "packageCompany": "MailChannels",
   "packageTitle": "MailChannels Email API SDK",
-  "packageDescription": "Server-side .NET client for all MailChannels Email API operations. Best-effort support through GitHub issues. Unreleased candidate.",
+  "packageDescription": "A .NET library for MailChannels Email API: send transactional email from your .NET app, set up delivery webhooks, and manage sub-accounts when your users send through your app. Server-side client for all Email API operations. Best-effort support through GitHub issues. Unreleased candidate.",
   "packageCopyright": "Copyright (c) 2026 MailChannels",
   "licenseId": "MIT",
   "packageTags": "mailchannels email transactional email-api",
