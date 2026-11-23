@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 sealed class ApiFixture(int status, string json) : HttpMessageHandler
 {
-    public string? Method, Body, ContentType, ApiKey;
+    public string? Method, Body, ContentType, ApiKey, UserAgent;
     public Uri? Uri;
     public System.Text.Json.JsonSerializerOptions Options = null!;
     public T Input<T>(string json) => System.Text.Json.JsonSerializer.Deserialize<T>(json, Options)!;
@@ -19,6 +19,8 @@ sealed class ApiFixture(int status, string json) : HttpMessageHandler
         await check(provider.GetRequiredService<T>(), fixture);
         Require(fixture.Method == method && fixture.Uri!.AbsolutePath == "/tx/v1" + path, "request route " + method + " " + path);
         Require(fixture.ApiKey == (authenticated ? "fixture-key" : null), "authentication presence");
+        // Bump with packageVersion in codegen/config.json.
+        Require(fixture.UserAgent == "mailchannels-dotnet/0.1.0-alpha.1", "User-Agent " + fixture.UserAgent);
         Console.WriteLine("PASS " + method + " " + path);
     }
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken token)
@@ -26,6 +28,7 @@ sealed class ApiFixture(int status, string json) : HttpMessageHandler
         Method = request.Method.Method; Uri = request.RequestUri;
         ApiKey = request.Headers.TryGetValues("X-Api-Key", out var values) ? values.Single() : null;
         ContentType = request.Content?.Headers.ContentType?.MediaType;
+        UserAgent = request.Headers.UserAgent.ToString();
         Body = request.Content is null ? null : await request.Content.ReadAsStringAsync(token);
         return new HttpResponseMessage((HttpStatusCode)status) { Content = new StringContent(json) };
     }
